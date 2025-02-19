@@ -44,7 +44,7 @@ const ENGINES: Record<string, EngineConfig> = {
       MEILISEARCH_API_KEY: ``,
     },
     envValidation: {
-      MEILISEARCH_HOST: `Env.schema.string({ format: 'host' })`,
+      MEILISEARCH_HOST: `Env.schema.string()`,
       MEILISEARCH_API_KEY: `Env.schema.string.optional()`,
     },
   },
@@ -56,7 +56,7 @@ const ENGINES: Record<string, EngineConfig> = {
       TYPESENSE_API_KEY: ``,
     },
     envValidation: {
-      TYPESENSE_NODE_URL: `Env.schema.string({ format: 'host' })`,
+      TYPESENSE_NODE_URL: `Env.schema.string()`,
       TYPESENSE_API_KEY: `Env.schema.string()`,
     },
   },
@@ -91,15 +91,15 @@ export async function configure(command: ConfigureCommand) {
 
   if (shouldInstallPackages === undefined) {
     shouldInstallPackages = await command.prompt.confirm(
-      'Do you want to install additional packages required by "@foadonis/magnify" and the selected search engine?'
+      'Do you want to install additional packages required by "@retronew/adonis-magnify" and the selected search engine?'
     )
   }
 
   const codemods = await command.createCodemods()
 
   await codemods.updateRcFile((rcFile) => {
-    rcFile.addCommand('@foadonis/magnify/commands')
-    rcFile.addProvider('@foadonis/magnify/magnify_provider')
+    rcFile.addCommand('@retronew/adonis-magnify/commands')
+    rcFile.addProvider('@retronew/adonis-magnify/magnify_provider')
   })
 
   await codemods.makeUsingStub(stubsRoot, `config/${engineName}.stub`, {})
@@ -119,34 +119,4 @@ export async function configure(command: ConfigureCommand) {
       }))
     )
   }
-
-  logSuccess(command)
-}
-
-function logSuccess(command: ConfigureCommand) {
-  const c = command.colors
-  const foadonis = c.bold('Friends Of Adonis')
-  const name = c.yellow('@foadonis/magnify')
-  command.logger.log('')
-  command.logger.log(c.green('╭───────────────────────────────────────╮'))
-  command.logger.log(c.green(`│ ${foadonis} | ${name} │`))
-  command.logger.log(c.green('╰───────────────────────────────────────╯'))
-  command.logger.log('╭')
-  command.logger.log('│ Welcome to @foadonis/magnify!')
-  command.logger.log('│ ')
-  command.logger.log('│ Get started')
-  command.logger.log('│ ↪  Docs: https://friendsofadonis.com/docs/magnify')
-  command.logger.log('│ ')
-  command.logger.log(
-    `│ ${c.yellow('⭐ Give a star: https://github.com/FriendsOfAdonis/FriendsOfAdonis')}`
-  )
-  command.logger.log('╰')
-  command.logger.log('')
-  command.logger.log(
-    c.grey(
-      c.italic(
-        'I am looking for maintainers to help me grow and maintain the FriendsOfAdonis ecosystem.\nContact me on discord: "@kerwan."'
-      )
-    )
-  )
 }

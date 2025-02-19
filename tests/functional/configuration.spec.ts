@@ -34,7 +34,7 @@ async function configure(fs: FileSystem, choice: number) {
   ace.prompt.trap('Select the Search engine you want to use').chooseOption(choice)
   ace.prompt
     .trap(
-      'Do you want to install additional packages required by "@foadonis/magnify" and the selected search engine?'
+      'Do you want to install additional packages required by "@retronew/adonis-magnify" and the selected search engine?'
     )
     .reject()
 
@@ -62,8 +62,8 @@ test.group('Configuration', (group) => {
     await assert.fileContains('config/magnify.ts', 'algolia')
 
     await assert.fileExists('adonisrc.ts')
-    await assert.fileContains('adonisrc.ts', '@foadonis/magnify/commands')
-    await assert.fileContains('adonisrc.ts', '@foadonis/magnify/magnify_provider')
+    await assert.fileContains('adonisrc.ts', '@retronew/adonis-magnify/commands')
+    await assert.fileContains('adonisrc.ts', '@retronew/adonis-magnify/magnify_provider')
 
     await assert.fileContains('.env', 'ALGOLIA_APP_ID')
     await assert.fileContains('.env', 'ALGOLIA_API_KEY')
@@ -77,8 +77,8 @@ test.group('Configuration', (group) => {
     await assert.fileContains('config/magnify.ts', 'meilisearch')
 
     await assert.fileExists('adonisrc.ts')
-    await assert.fileContains('adonisrc.ts', '@foadonis/magnify/commands')
-    await assert.fileContains('adonisrc.ts', '@foadonis/magnify/magnify_provider')
+    await assert.fileContains('adonisrc.ts', '@retronew/adonis-magnify/commands')
+    await assert.fileContains('adonisrc.ts', '@retronew/adonis-magnify/magnify_provider')
 
     await assert.fileContains('.env', 'MEILISEARCH_HOST')
   })
@@ -91,8 +91,8 @@ test.group('Configuration', (group) => {
     await assert.fileContains('config/magnify.ts', 'typesense')
 
     await assert.fileExists('adonisrc.ts')
-    await assert.fileContains('adonisrc.ts', '@foadonis/magnify/commands')
-    await assert.fileContains('adonisrc.ts', '@foadonis/magnify/magnify_provider')
+    await assert.fileContains('adonisrc.ts', '@retronew/adonis-magnify/commands')
+    await assert.fileContains('adonisrc.ts', '@retronew/adonis-magnify/magnify_provider')
 
     await assert.fileContains('.env', 'TYPESENSE_API_KEY')
   })
