@@ -1,7 +1,7 @@
 import { MeilisearchConfig, SearchableModel, SearchableRow } from '../types.js'
 import { MeiliSearch, SearchParams, SearchResponse } from 'meilisearch'
 import { Builder } from '../builder.js'
-import { SimplePaginator } from '@adonisjs/lucid/database'
+import { ModelPaginator } from '@adonisjs/lucid/orm'
 import { MagnifyEngine } from './main.js'
 import is from '@adonisjs/core/helpers/is'
 
@@ -62,14 +62,14 @@ export class MeilisearchEngine implements MagnifyEngine {
     })
   }
 
-  async paginate(builder: Builder, page: number, perPage: number) {
+  async paginate(builder: Builder, page: number, perPage: number): Promise<ModelPaginator> {
     const results = await this.#performSearch(builder, {
       page,
       hitsPerPage: perPage,
       sort: this.#buildSortFromOrderByClauses(builder),
     })
 
-    return new SimplePaginator(
+    return new ModelPaginator(
       results.hitsPerPage,
       page,
       perPage,

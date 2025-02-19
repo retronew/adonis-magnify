@@ -1,4 +1,4 @@
-import { SimplePaginator } from '@adonisjs/lucid/database'
+import { ModelPaginator } from '@adonisjs/lucid/orm'
 import { Builder } from '../builder.js'
 import { AlgoliaConfig, SearchableModel, SearchableRow } from '../types.js'
 import { MagnifyEngine } from './main.js'
@@ -67,14 +67,14 @@ export class AlgoliaEngine implements MagnifyEngine {
     return builder.$model.$queryMagnifyModelsByIds(builder, ...ids)
   }
 
-  async paginate(builder: Builder, page: number, perPage: number): Promise<SimplePaginator> {
+  async paginate(builder: Builder, page: number, perPage: number): Promise<ModelPaginator> {
     const results = await this.#performSearch(builder, {
       page: page - 1,
       hitsPerPage: perPage,
       numericFilters: this.#filters(builder),
     })
 
-    return new SimplePaginator(
+    return new ModelPaginator(
       results.nbHits ?? results.hits.length,
       page,
       perPage,

@@ -2,10 +2,10 @@ import { SearchableModel, SearchableRow, TypesenseConfig } from '../types.js'
 import { Client } from 'typesense'
 import { MagnifyEngine } from './main.js'
 import { Builder } from '../builder.js'
-import { SimplePaginator } from '@adonisjs/lucid/database'
 import Collection from 'typesense/lib/Typesense/Collection.js'
 import { SearchParams, SearchResponse } from 'typesense/lib/Typesense/Documents.js'
 import is from '@adonisjs/core/helpers/is'
+import { ModelPaginator } from '@adonisjs/lucid/orm'
 
 export class TypesenseEngine implements MagnifyEngine {
   #config: TypesenseConfig
@@ -81,13 +81,13 @@ export class TypesenseEngine implements MagnifyEngine {
     return builder.$model.$queryMagnifyModelsByIds(builder, ...ids)
   }
 
-  async paginate(builder: Builder, page: number, perPage: number): Promise<SimplePaginator> {
+  async paginate(builder: Builder, page: number, perPage: number): Promise<ModelPaginator> {
     const results = await this.#performSearch(
       builder,
       this.#buildSearchParameters(builder, page, perPage)
     )
 
-    return new SimplePaginator(results.found, page, perPage, ...(await this.map(builder, results)))
+    return new ModelPaginator(results.found, page, perPage, ...(await this.map(builder, results)))
   }
 
   async get(builder: Builder): Promise<any[]> {

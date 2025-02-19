@@ -1,4 +1,4 @@
-import { SimplePaginator } from '@adonisjs/lucid/database'
+import { ModelPaginator } from '@adonisjs/lucid/orm'
 import { Builder } from '../builder.js'
 import { SearchableModel, SearchableRow } from '../types.js'
 
@@ -26,7 +26,7 @@ export abstract class MagnifyEngine {
   /**
    * Perform the given search on the engine.
    */
-  abstract paginate(builder: Builder, page: number, perPage: number): Promise<SimplePaginator>
+  abstract paginate(builder: Builder, page: number, perPage: number): Promise<ModelPaginator>
 
   /**
    * Flush all of the model's records from the engine.

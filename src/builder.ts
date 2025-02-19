@@ -1,4 +1,4 @@
-import { SimplePaginator } from '@adonisjs/lucid/database'
+import { ModelPaginator } from '@adonisjs/lucid/orm'
 import { MagnifyEngine } from './engines/main.js'
 import { SearchableModel } from './types.js'
 
@@ -100,7 +100,7 @@ export class Builder<Model extends SearchableModel = SearchableModel> {
     return this
   }
 
-  async paginate(page = 1, perPage = 20): Promise<SimplePaginator> {
+  async paginate(page = 1, perPage = 20): Promise<ModelPaginator> {
     return this.$engine.paginate(this, page, perPage)
   }
 
