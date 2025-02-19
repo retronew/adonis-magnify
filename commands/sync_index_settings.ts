@@ -2,10 +2,15 @@ import 'reflect-metadata'
 import { inject } from '@adonisjs/core'
 import { BaseCommand } from '@adonisjs/core/ace'
 import { MagnifyEngine } from '../src/engines/main.js'
+import { CommandOptions } from '@adonisjs/core/types/ace'
 
 export default class SyncIndexSettings extends BaseCommand {
   static commandName = 'magnify:sync-index-settings'
   static description = 'Sync your configured index settings with your search engine (Meilisearch)'
+
+  static options: CommandOptions = {
+    startApp: true,
+  }
 
   @inject()
   async run(): Promise<void> {
