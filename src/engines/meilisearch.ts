@@ -62,17 +62,17 @@ export class MeilisearchEngine implements MagnifyEngine {
     })
   }
 
-  async paginate(builder: Builder, perPage: number, page: number) {
+  async paginate(builder: Builder, page: number, perPage: number) {
     const results = await this.#performSearch(builder, {
-      hitsPerPage: perPage,
       page,
+      hitsPerPage: perPage,
       sort: this.#buildSortFromOrderByClauses(builder),
     })
 
     return new SimplePaginator(
       results.hitsPerPage,
-      perPage,
       page,
+      perPage,
       ...(await this.map(builder, results))
     )
   }

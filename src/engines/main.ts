@@ -26,7 +26,7 @@ export abstract class MagnifyEngine {
   /**
    * Perform the given search on the engine.
    */
-  abstract paginate(builder: Builder, perPage: number, page: number): Promise<SimplePaginator>
+  abstract paginate(builder: Builder, page: number, perPage: number): Promise<SimplePaginator>
 
   /**
    * Flush all of the model's records from the engine.

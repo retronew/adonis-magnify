@@ -100,8 +100,8 @@ export class Builder<Model extends SearchableModel = SearchableModel> {
     return this
   }
 
-  async paginate(perPage = 20, page = 1): Promise<SimplePaginator> {
-    return this.$engine.paginate(this, perPage, page)
+  async paginate(page = 1, perPage = 20): Promise<SimplePaginator> {
+    return this.$engine.paginate(this, page, perPage)
   }
 
   /**

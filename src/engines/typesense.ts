@@ -81,13 +81,13 @@ export class TypesenseEngine implements MagnifyEngine {
     return builder.$model.$queryMagnifyModelsByIds(builder, ...ids)
   }
 
-  async paginate(builder: Builder, perPage: number, page: number): Promise<SimplePaginator> {
+  async paginate(builder: Builder, page: number, perPage: number): Promise<SimplePaginator> {
     const results = await this.#performSearch(
       builder,
       this.#buildSearchParameters(builder, page, perPage)
     )
 
-    return new SimplePaginator(results.found, perPage, page, ...(await this.map(builder, results)))
+    return new SimplePaginator(results.found, page, perPage, ...(await this.map(builder, results)))
   }
 
   async get(builder: Builder): Promise<any[]> {
@@ -104,8 +104,8 @@ export class TypesenseEngine implements MagnifyEngine {
       q: builder.$query,
       query_by: this.#config.collectionSettings[builder.$model.$searchIndex].queryBy ?? '',
       filter_by: this.#filters(builder),
-      per_page: perPage,
       page,
+      per_page: perPage,
       highlight_start_tag: '<mark>',
       highlight_end_tag: '</mark>',
       snippet_threshold: 30,

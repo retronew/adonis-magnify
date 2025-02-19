@@ -67,7 +67,7 @@ export class AlgoliaEngine implements MagnifyEngine {
     return builder.$model.$queryMagnifyModelsByIds(builder, ...ids)
   }
 
-  async paginate(builder: Builder, perPage: number, page: number): Promise<SimplePaginator> {
+  async paginate(builder: Builder, page: number, perPage: number): Promise<SimplePaginator> {
     const results = await this.#performSearch(builder, {
       page: page - 1,
       hitsPerPage: perPage,
@@ -76,8 +76,8 @@ export class AlgoliaEngine implements MagnifyEngine {
 
     return new SimplePaginator(
       results.nbHits ?? results.hits.length,
-      perPage,
       page,
+      perPage,
       ...(await this.map(builder, results))
     )
   }
