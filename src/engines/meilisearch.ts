@@ -102,41 +102,40 @@ export class MeilisearchEngine implements MagnifyEngine {
     }
   }
 
+  #formatFilterValue(value: any): string {
+    if (is.boolean(value)) {
+      return value ? 'true' : 'false'
+    }
+    if (is.number(value)) {
+      return value.toString()
+    }
+    return `"${value}"`
+  }
+
   #filters(builder: Builder) {
-    const filters = Object.entries(builder.$wheres).map(([key, value]) => {
-      if (is.boolean(value)) {
-        return `${key}=${value ? 'true' : 'false'}`
-      }
+    const filters: string[] = []
 
-      if (is.number(value)) {
-        return `${key}=${value}`
-      }
-
-      return `${key}="${value}"`
+    // Handle normal wheres
+    Object.entries(builder.$wheres).map(([key, value]) => {
+      filters.push(`${key}=${this.#formatFilterValue(value)}`)
     })
 
+    // Handle whereNots
+    Object.entries(builder.$whereNots).map(([key, value]) => {
+      filters.push(`NOT ${key}=${this.#formatFilterValue(value)}`)
+    })
+
+    // Handle whereIns and whereNotIns
     for (const [operator, property] of [
       ['IN', builder.$whereIns],
       ['NOT IN', builder.$whereNotIns],
     ] as const) {
       for (const [key, values] of Object.entries(property)) {
         const filterValue = values
-          .map((value) => {
-            if (is.boolean(value)) {
-              return value ? 'true' : 'false'
-            }
-
-            if (is.number(value)) {
-              return value
-            }
-
-            return `"${value}"`
-          })
+          .map((value) => this.#formatFilterValue(value))
           .join(', ')
 
-        const filter = `${key} ${operator} [${filterValue}]`
-
-        filters.push(filter)
+        filters.push(`${key} ${operator} [${filterValue}]`)
       }
     }
 

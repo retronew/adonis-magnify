@@ -24,6 +24,11 @@ export class Builder<Model extends SearchableModel = SearchableModel> {
   $wheres: Record<string, any> = {}
 
   /**
+   * The "where not" constraints added to the query.
+   */
+  $whereNots: Record<string, any> = {}
+
+  /**
    * The "where in" constraints added to the query.
    */
   $whereIns: Record<string, any[]> = {}
@@ -61,6 +66,14 @@ export class Builder<Model extends SearchableModel = SearchableModel> {
    */
   where(field: string, value: any): this {
     this.$wheres[field] = value
+    return this
+  }
+
+  /**
+   * Add a "where not" constraint to the search query.
+   */
+  whereNot(field: string, value: any): this {
+    this.$whereNots[field] = value
     return this
   }
 
