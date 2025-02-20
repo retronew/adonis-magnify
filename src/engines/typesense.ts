@@ -87,7 +87,12 @@ export class TypesenseEngine implements MagnifyEngine {
       this.#buildSearchParameters(builder, page, perPage)
     )
 
-    return new ModelPaginator(results.found, page, perPage, ...(await this.map(builder, results)))
+    return new ModelPaginator(
+      results.found,
+      perPage,
+      page,
+      ...(await this.map(builder, results))
+    )
   }
 
   async get(builder: Builder): Promise<any[]> {

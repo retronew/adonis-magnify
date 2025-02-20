@@ -76,8 +76,8 @@ export class AlgoliaEngine implements MagnifyEngine {
 
     return new ModelPaginator(
       results.nbHits ?? results.hits.length,
-      page,
       perPage,
+      page,
       ...(await this.map(builder, results))
     )
   }

@@ -71,8 +71,8 @@ export class MeilisearchEngine implements MagnifyEngine {
 
     return new ModelPaginator(
       results.hitsPerPage,
-      page,
       perPage,
+      page,
       ...(await this.map(builder, results))
     )
   }
