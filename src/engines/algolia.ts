@@ -90,23 +90,39 @@ export class AlgoliaEngine implements MagnifyEngine {
     return this.map(builder, await this.search(builder))
   }
 
+  #formatFilterValue(value: any): string | number {
+    if (is.boolean(value)) {
+      return value ? 1 : 0
+    }
+    if (is.number(value)) {
+      return value
+    }
+    return value.toString()
+  }
+
   #filters(builder: Builder): NumericFilters | undefined {
-    const wheres = Object.entries(builder.$wheres).map(([key, value]) => {
-      if (is.boolean(value)) return `${key} = ${value ? 1 : 0}`
-      return `${key} = ${value}`
+    const filters: string[] = []
+
+    // Handle wheres
+    Object.entries(builder.$wheres).forEach(([key, value]) => {
+      filters.push(`${key} = ${this.#formatFilterValue(value)}`)
     })
-    const whereIns = Object.entries(builder.$whereIns).map(([key, values]) => {
+
+    // Handle whereNots
+    Object.entries(builder.$whereNots).forEach(([key, value]) => {
+      filters.push(`NOT ${key} = ${this.#formatFilterValue(value)}`)
+    })
+
+    // Handle whereIns
+    Object.entries(builder.$whereIns).forEach(([key, values]) => {
       if (values.length) {
-        return '0 = 1'
+        filters.push('0 = 1')
+      } else {
+        values.forEach(value => {
+          filters.push(`${key} = ${this.#formatFilterValue(value)}`)
+        })
       }
-
-      return values.map((value) => {
-        if (is.boolean(value)) return `${key} = ${value ? 1 : 0}`
-        return `${key}:${value}`
-      })
     })
-
-    const filters = [...wheres, whereIns]
 
     return filters.length <= 0 ? undefined : filters
   }

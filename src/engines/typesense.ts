@@ -119,24 +119,39 @@ export class TypesenseEngine implements MagnifyEngine {
     return parameters
   }
 
+  #formatFilterValue(value: any): string {
+    if (is.boolean(value)) {
+      return value ? 'true' : 'false'
+    }
+    if (is.number(value)) {
+      return value.toString()
+    }
+    return value
+  }
+
   #filters(builder: Builder): string {
-    const whereFilter = Object.entries(builder.$wheres)
-      .map(([key, value]) => this.#parseWhereFilter(key, value))
-      .join(' && ')
+    const filters: string[] = []
 
-    const whereInFilter = Object.entries(builder.$whereIns)
-      .map(([key, value]) => this.#parseWhereInFilter(key, value))
-      .join(' && ')
+    // Handle wheres
+    Object.entries(builder.$wheres).forEach(([key, value]) => {
+      if (is.array(value)) {
+        filters.push(`${key}:${value.map(v => this.#formatFilterValue(v)).join('')}`)
+      } else {
+        filters.push(`${key}:=${this.#formatFilterValue(value)}`)
+      }
+    })
 
-    return [whereFilter, whereInFilter].filter((f) => f.length > 0).join(' && ')
-  }
+    // Handle whereNots
+    Object.entries(builder.$whereNots).forEach(([key, value]) => {
+      filters.push(`NOT ${key}:=${this.#formatFilterValue(value)}`)
+    })
 
-  #parseWhereFilter(key: string, value: string | string[]) {
-    return is.array(value) ? `${key}:${value.join('')}` : `${key}:=${value}`
-  }
+    // Handle whereIns
+    Object.entries(builder.$whereIns).forEach(([key, values]) => {
+      filters.push(`${key}:=[${values.map(v => this.#formatFilterValue(v)).join(', ')}]`)
+    })
 
-  #parseWhereInFilter(key: string, value: string[]) {
-    return `${key}:=[${value.join(', ')}]`
+    return filters.join(' && ')
   }
 
   async #getOrCreateCollectionFromModel(model: SearchableModel): Promise<Collection.default> {
