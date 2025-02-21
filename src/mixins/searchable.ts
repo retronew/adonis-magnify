@@ -84,13 +84,14 @@ export function Searchable<T extends Constructor>(superclass: T) {
     /**
      * Get a query builder for retrieving the requested models from an array of object IDs.
      */
-    static $queryMagnifyModelsByIds<M extends SearchableModel>(
+    static async $queryMagnifyModelsByIds<M extends SearchableModel>(
       this: M,
       _builder: Builder<M>,
       ...ids: string[]
     ): Promise<any[]> {
       const query = this.query()
-      return query.whereIn(this.$searchKey, ids)
+      const results = await query.whereIn(this.$searchKey, ids)
+      return ids.map((id) => results.find((result) => result.$attributes?.[this.$searchKey] === id))
     }
 
     /**
