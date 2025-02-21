@@ -151,12 +151,29 @@ export class MeilisearchEngine implements MagnifyEngine {
     S extends SearchParams = SearchParams,
   >(builder: Builder, searchParams: S) {
     const index = this.#client.index<T>(builder.$index ?? builder.$model.$searchIndex)
-    // TODO: Add builder options
 
-    if (searchParams.attributesToRetrieve) {
-      searchParams.attributesToRetrieve.unshift(builder.$model.$searchKey)
+    const baseParameters = this.#buildSearchParameters(builder)
+
+    const finalParameters = {
+      ...baseParameters,
+      ...searchParams,
     }
 
-    return index.search(builder.$query, searchParams)
+    if (finalParameters.attributesToRetrieve) {
+      finalParameters.attributesToRetrieve.unshift(builder.$model.$searchKey)
+    }
+
+    return index.search(builder.$query, finalParameters)
+  }
+
+  #buildSearchParameters(builder: Builder, page = 1, perPage = 250) {
+    const parameters: SearchParams = {
+      q: builder.$query,
+      page,
+      hitsPerPage: perPage,
+      attributesToHighlight: builder.$highlightFields,
+    }
+
+    return parameters
   }
 }

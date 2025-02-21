@@ -4,6 +4,11 @@ import { SearchableModel } from './types.js'
 
 export class Builder<Model extends SearchableModel = SearchableModel> {
   /**
+   * The fields that should be highlighted in the search results.
+   */
+  #highlightFields: string[] = []
+
+  /**
    * The custom index specified for the search.
    */
   $index?: string
@@ -111,6 +116,21 @@ export class Builder<Model extends SearchableModel = SearchableModel> {
     })
 
     return this
+  }
+
+  /**
+   * Specify which fields should be highlighted in the search results.
+   */
+  highlight(...fields: string[]): this {
+    this.#highlightFields = fields
+    return this
+  }
+
+  /**
+   * Get the fields that should be highlighted.
+   */
+  get $highlightFields(): string[] {
+    return this.#highlightFields
   }
 
   async paginate(page = 1, perPage = 20): Promise<ModelPaginator> {
